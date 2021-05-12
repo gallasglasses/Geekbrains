@@ -27,8 +27,8 @@ int main()
     int digit;
     while (std::cin >> digit)
     {
-        (digit <= POINT) ? (std::cout << "Difference between numbers " << POINT << " and " << digit << " is " << POINT - digit << std::endl) : 
-            (std::cout << "Twice the difference between numbers " << POINT << " and " << digit << " is " << 2 * (digit - POINT) << std::endl);
+     int value = (digit <= POINT) ? (POINT - digit) : ((digit - POINT) << 1);
+        std::cout << "The difference between numbers " << POINT << " and " << digit << " is " << value << std::endl;
         std::cout << "Enter the digit ('q' to terminate): ";
     }
     std::cout << std::endl;
