@@ -72,12 +72,9 @@ void hw3(void)
 {
     std::cout << "Program that displays a list of all odd numbers from 1 to 50.\n";
     std::cout << "Odd numbers: ";
-    for (int i = 1; i <= 50; i++)
-    {
-        if (i % 2 == 1)
-            std::cout << i << " ";
-    }
-
+    for (int i = 1; i <= 50; i+=2)
+        std::cout << i << " ";
+    
     std::cout << "\nProgram completed!\n\n";
 }
 
