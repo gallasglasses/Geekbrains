@@ -1,0 +1,8 @@
+Employee information
+ID: 100019
+First Name: Galina
+Last Name: Syrodoeva
+Age: 28
+Salary: 100000
+Phone: 89996655443
+ID position: 17

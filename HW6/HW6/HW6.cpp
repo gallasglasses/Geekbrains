@@ -244,7 +244,7 @@ void findWord()
         size_t countWords = 0,
                foundWords = 0,
                lineNumber = 0;
-        std::cout << "Please give the filename with expansion (ex: \" name.txt \") : ";
+        std::cout << "Please give the filename with expansion (ex: \"text.txt\" or \"HW6.cpp\") : ";
         std::cin >> fileName;
         
         std::cout << "Write the word you're searching for.";
