@@ -14,6 +14,8 @@ void delete2DimArray(int** arr, size_t size1, size_t size2);
 void fillRandArray(int** arr, size_t size1, size_t size2);
 void print2DimArray(int** arr, size_t size1, size_t size2);
 void newFile(std::string name);
+void outputFile(std::string name);
+void copyFile(std::ifstream& fin, std::ofstream& fout);
 void mergingFiles();
 void findWord();
 
@@ -54,9 +56,11 @@ int main()
         std::string nameForFile;
         nameForFile = nameFile();
         newFile(nameForFile);
+        outputFile(nameForFile);
 
         nameForFile = nameFile();
         newFile(nameForFile);
+        outputFile(nameForFile);
         std::cout << "\n_____________________________________________\n\n";
     }
 
@@ -72,7 +76,6 @@ int main()
         std::cout << "\n_____________________________________________\n\n";
     }
     
-
     return 0;
 }
 
@@ -144,30 +147,35 @@ std::string nameFile()
 
 void newFile(std::string name)
 {
-    
-    const char text[25] = "some text write here";
+    const size_t SIZE = 1024;
+    char text[SIZE];
     std::ofstream fout(name);
     if (fout.is_open())
     {
-        for (size_t i = 0; i < 15; i++)
-        {
-            fout << text << " " << i << " ";
-        }
+        std::cin.get();
+        std::cin.get(text, SIZE);
+        fout << text;
         fout.close();
     }
+    else
+    {
+        std::cout << "Error.";
+    }
+}
 
-    std::string textFile;
-    const size_t size = 255;
-    char buf[size];
+void outputFile(std::string name)
+{
+    const size_t SIZE = 1024;
+    char buf[SIZE];
     std::ifstream fin(name);
-    
+    std::cout << "\nFile \" " << name << " \" :\n";
     if (fin.is_open())
     {
-        
-        for (size_t i = 0; i < size; i++)
+
+        while (!fin.eof())
         {
-            fin >> buf[i];
-            std::cout << buf[i];
+            fin.getline(buf, SIZE);
+            std::cout << buf << std::endl;
         }
         fin.close();
     }
@@ -175,25 +183,29 @@ void newFile(std::string name)
     {
         std::cout << "Error. Can not open file.";
     }
+}
 
-    std::cin.get();
+void copyFile(std::ifstream& fin, std::ofstream& fout)
+{
+    const size_t SIZE = 1024;
+    char buf[SIZE];
+
+    while (!fin.eof())
+    {
+        fin.getline(buf, SIZE);
+        fout << buf << std::endl;
+    }
 }
 
 void mergingFiles()
 {
-    std::string str;
-
     std::string fName1;
     std::cout << "\nFirst file\n";
-    std::cout << "\nPlease give the filename(without \".txt\"): ";
-    std::cin >> fName1;
-    fName1 += ".txt";
-
+    fName1 = nameFile();
+    
     std::string fName2;
     std::cout << "\nSecond file\n";
-    std::cout << "\nPlease give the filename(without \".txt\"): ";
-    std::cin >> fName2;
-    fName2 += ".txt";
+    fName2 = nameFile();
 
 
     std::ifstream fin1(fName1);
@@ -207,19 +219,15 @@ void mergingFiles()
         std::cout << "\nThird file\n";
         fName3 = nameFile();
         std::ofstream fout(fName3);
-        fout.is_open();
-
-        do 
+        if (fout.is_open())
         {
-            std::getline(fin1, str);
-            fout << str << std::endl;
-            //std::getline(fin2, str);
-            //fout << str << std::endl;
-        } while (fin1 && fin2);
+            copyFile(fin1, fout);
+            fin1.close();
 
-        fin1.close();
-        fin2.close();
-        fout.close();
+            copyFile(fin2, fout);
+            fin2.close();
+        }
+        outputFile(fName3);
     }
     else 
     {
@@ -228,8 +236,6 @@ void mergingFiles()
         if (!secondFile)
             std::cout << "Error! Second file " << fName2 << " not found!\n";
     }
-
-    std::cin.get();
 }
 
 void findWord()
@@ -237,55 +243,72 @@ void findWord()
     std::string fileName,
                 line,
                 word;
-    //bool isContinue = true;
+    bool isContinue = true;
     
-    while (1)
+    while (isContinue)
     {
         size_t countWords = 0,
                foundWords = 0,
                lineNumber = 0;
-        std::cout << "Please give the filename with expansion (ex: \"text.txt\" or \"HW6.cpp\") : ";
+        std::cout << "Please give the filename with expansion (ex: \"text.txt\" or \"HW6.cpp\").\n";
+        std::cout << "Enter for exit \"~\"\n";
         std::cin >> fileName;
-        
-        std::cout << "Write the word you're searching for.";
+        std::cout << "\n";
+        std::cout << "Write the word you're searching for.\n";
+        std::cout << "Enter for exit \"~\"\n";
         std::cin >> word;
-        std::ifstream File(fileName.c_str());
-        if (File)
+        std::cout << "\n";
+        while (fileName != "~" && word != "~")
         {
-            while (std::getline(File, line))
+            std::ifstream File(fileName.c_str());
+            if (File)
             {
-                lineNumber++;
-                size_t coutPos = 0;
-                for (size_t i = line.find(word); i < line.length(); i = i + word.length())
+                while (std::getline(File, line))
                 {
-                        
-                    coutPos = line.find(word, i);
-                    if ((coutPos != std::string::npos))
+                    lineNumber++;
+                    size_t coutPos = 0;
+                    for (size_t i = line.find(word); i < line.length(); i = i + word.length())
                     {
-                        std::cout << word << " is at " << lineNumber << ":" << coutPos << "\n";
-                        countWords++;
-                    }
-                    else break;
-                    if (coutPos > i)
-                    {
-                        i = coutPos;
+
+                        coutPos = line.find(word, i);
+                        if ((coutPos != std::string::npos))
+                        {
+                            std::cout << word << " is at " << lineNumber << ":" << coutPos << "\n";
+                            countWords++;
+                        }
+                        else break;
+                        if (coutPos > i)
+                        {
+                            i = coutPos;
+                        }
                     }
                 }
-            }
-            File.close();
-            if (countWords > 0)
-            {
-                    std::cout << "The word \"" << word << "\" has been found " << countWords << " times.\n";
+                File.close();
+                if (countWords > 0)
+                {
+                    std::cout << "The word \"" << word << "\" has been found " << countWords << " times.\n\n";
+                }
+                else
+                {
+                    std::cout << "The word has not been found.\n\n";
+                }
             }
             else
             {
-                    std::cout << "The word has not been found.\n";
+                std::cout << "Error! File not found!\n";
             }
+            std::cout << "Please give the filename with expansion (ex: \"text.txt\" or \"HW6.cpp\")\n";
+            std::cout << "Enter for exit \"~\"\n";
+            std::cin >> fileName;
+            std::cout << "\n";
+            std::cout << "Write the word you're searching for.\n";
+            std::cout << "Enter for exit \"~\"\n";
+            std::cin >> word;
+            std::cout << "\n";
         }
-        else
-        {
-            std::cout << "Error! File not found!\n";
-        }
+        if (fileName == "~" || word == "~")
+            isContinue = false;
     }
+    std::cout << "\nEnd of the programme.\n\n";
 }
     
